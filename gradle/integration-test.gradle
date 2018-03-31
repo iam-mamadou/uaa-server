@@ -1,0 +1,38 @@
+
+sourceSets {
+    integrationTest {
+        java.srcDir 'src/integration-test/java'
+        resources.srcDir 'src/integration-test/resources'
+    }
+}
+
+dependencies {
+    // get compiled class from main at compile time
+    integrationTestCompile sourceSets.main.output
+
+    // get required dependencies from main at compile time
+    integrationTestCompile configurations.compile
+
+    // get required dependencies from test at compile time
+    integrationTestCompile configurations.testCompile
+
+    // get required dependencies from main at runtime
+    integrationTestCompile configurations.runtime
+
+    // get required dependencies from test at runtime
+    integrationTestCompile configurations.testRuntime
+}
+
+task integrationTest(type: Test) {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+
+    reports {
+        html.setDestination(file("$buildDir/reports/integration-tests"))
+    }
+
+    ignoreFailures = false
+
+    mustRunAfter tasks.test
+}
+
+check.dependsOn integrationTest

@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: uaa-service
+  profiles:
+    active: dev
+# server
+server:
+  servlet:
+    context-path: /uaa
