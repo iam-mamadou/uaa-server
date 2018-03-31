@@ -4,9 +4,11 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
+		jcenter()
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath('org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:1.4.4')
 	}
 }
 
@@ -14,8 +16,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply from: "$rootDir/gradle/integration-test.gradle"
-
+apply plugin: 'org.unbroken-dome.test-sets'
 
 group = 'com.mamadou.sk'
 version = '0.0.1-SNAPSHOT'
@@ -23,6 +24,7 @@ sourceCompatibility = 1.8
 
 repositories {
 	mavenCentral()
+	jcenter()
 }
 
 
@@ -62,4 +64,43 @@ dependencies {
 // gradle wrapper to ensure the correct gradle version is in use
 task wrapper(type: Wrapper) {
 	gradleVersion = '4.5.1'
+}
+
+// set up integration-test directory
+testSets {
+	integrationTest { dirName = 'integration-test'}
+}
+
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
+
+integrationTest {
+	reports {
+		html.setDestination(file("$buildDir/reports/integration-tests"))
+		junitXml.setDestination(file("$buildDir/integration-test-results"))
+	}
+}
+
+// display test results in console
+tasks.withType(Test) {
+	testLogging {
+		showStandardStreams = true
+		afterSuite { desc, result ->
+			if (!desc.parent) {
+				def testDescription = "Tests run: $result.testCount, Failures: $result.failedTestCount, Skipped: $result.skippedTestCount "
+				def divider = '-' * testDescription.length()
+				def testResult = """
+					Results:
+					$testDescription
+					$divider
+					BUILD: ${result.resultType}
+					$divider
+					Total time: ${(result.endTime-result.startTime)/1000} seconds
+					Finished time: ${new Date().format("dd-MM-yyyy-HH:mm:ss z", TimeZone.getTimeZone('GMT'))}
+					$divider"""
+				println testResult.stripIndent()
+			}
+		}
+
+	}
 }
