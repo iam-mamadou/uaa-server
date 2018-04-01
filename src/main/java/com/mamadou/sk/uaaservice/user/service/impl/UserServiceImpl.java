@@ -1,7 +1,8 @@
 package com.mamadou.sk.uaaservice.user.service.impl;
 
 import com.mamadou.sk.uaaservice.user.entitity.User;
-import com.mamadou.sk.uaaservice.user.exception.UsernameAlreadyExists;
+import com.mamadou.sk.uaaservice.user.exception.EmailAlreadyExistsException;
+import com.mamadou.sk.uaaservice.user.exception.UsernameAlreadyExistsException;
 import com.mamadou.sk.uaaservice.user.repository.UserRepository;
 import com.mamadou.sk.uaaservice.user.service.UserService;
 import lombok.AllArgsConstructor;
@@ -17,10 +18,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createUser(User newUser) {
+        throwExceptionIfUsernameExists(newUser);
+
+        throwExceptionIfEmailExists(newUser);
+
+        userRepository.save(newUser);
+    }
+
+    private void throwExceptionIfUsernameExists(User newUser) {
         Optional<User> existingUser = userRepository.findByUsername(newUser.getUsername());
         if(existingUser.isPresent()) {
-            throw new UsernameAlreadyExists("Username already exists");
+            throw new UsernameAlreadyExistsException("Username already exists");
         }
-        userRepository.save(newUser);
+    }
+
+    private void throwExceptionIfEmailExists(User newUser) {
+        Optional<User> existingUser = userRepository.findByEmail(newUser.getEmail());
+        if(existingUser.isPresent()) {
+            throw new EmailAlreadyExistsException("Email already exists");
+        }
     }
 }

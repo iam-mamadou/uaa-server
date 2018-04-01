@@ -33,9 +33,10 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
 
+    @Column(unique = true, nullable = false)
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)

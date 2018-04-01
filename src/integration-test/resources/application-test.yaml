@@ -1,0 +1,7 @@
+spring:
+  flyway:
+    enabled: false
+# jwt
+jwt:
+  expiration: 2 # in minutes
+  secret: test

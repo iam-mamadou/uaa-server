@@ -1,7 +1,7 @@
 package com.mamadou.sk.uaaservice.user.web.mapper.impl;
 
 import com.mamadou.sk.uaaservice.user.entitity.User;
-import com.mamadou.sk.uaaservice.user.service.impl.AuthorityMapper;
+import com.mamadou.sk.uaaservice.user.web.mapper.AuthorityMapper;
 import com.mamadou.sk.uaaservice.user.web.dto.AuthorityDTO;
 import com.mamadou.sk.uaaservice.user.web.dto.UserDTO;
 import com.mamadou.sk.uaaservice.user.web.mapper.UserMapper;
@@ -11,7 +11,6 @@ import org.modelmapper.ModelMapper;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.tuple;
 import static org.assertj.core.api.BDDAssertions.then;
 
 

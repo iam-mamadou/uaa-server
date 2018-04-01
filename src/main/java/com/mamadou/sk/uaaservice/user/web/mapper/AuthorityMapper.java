@@ -1,4 +1,4 @@
-package com.mamadou.sk.uaaservice.user.service.impl;
+package com.mamadou.sk.uaaservice.user.web.mapper;
 
 import com.mamadou.sk.uaaservice.user.entitity.Authority;
 import com.mamadou.sk.uaaservice.user.web.dto.AuthorityDTO;

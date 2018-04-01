@@ -1,7 +1,7 @@
 package com.mamadou.sk.uaaservice.user.web.mapper.impl;
 
 import com.mamadou.sk.uaaservice.user.entitity.Authority;
-import com.mamadou.sk.uaaservice.user.service.impl.AuthorityMapper;
+import com.mamadou.sk.uaaservice.user.web.mapper.AuthorityMapper;
 import com.mamadou.sk.uaaservice.user.web.dto.AuthorityDTO;
 import org.springframework.stereotype.Component;
 
