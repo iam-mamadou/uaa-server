@@ -37,12 +37,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring()
            .antMatchers(HttpMethod.OPTIONS, "/**")
            .antMatchers("/webjars/**")
-           .antMatchers("/h2-console/**") //TODO change permission
-           .antMatchers("/v2/api-docs/**",
-                        "/configuration/security",
-                        "/swagger-resources",
-                        "/swagger-resources/configuration/ui",
-                        "/swagger-ui.html");//TODO change permission
+           .antMatchers("/h2-console/**");//TODO change permission
     }
 
     @Override
