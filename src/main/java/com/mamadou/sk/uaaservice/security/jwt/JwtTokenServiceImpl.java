@@ -20,6 +20,7 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -42,6 +43,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     public String generate(Authentication authentication) {
         CustomUserDetails user = (CustomUserDetails)authentication.getPrincipal();
         return Jwts.builder()
+                   .setId(UUID.randomUUID().toString())
                    .setIssuer(applicationName)
                    .setIssuedAt(createdDate())
                    .setSubject(user.getUsername())

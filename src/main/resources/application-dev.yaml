@@ -17,5 +17,5 @@ spring:
 
 # jwt
 jwt:
-  expiration: 24 # in hours
+  expiration: 2 # in minutes
   secret: bob-marley
