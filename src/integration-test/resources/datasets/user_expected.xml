@@ -1,0 +1,20 @@
+<dataset>
+    <user
+            user_id="1"
+            first_name="first"
+            last_name="last"
+            username="admin"
+            email="admin@email.com"
+            password="admin"
+            enabled="true"
+            expired="false"
+            locked="false"
+    />
+
+    <!-- give admin user and admin role-->
+    <authority role="ROLE_ADMIN"/>
+    <authority role="ROLE_USER"/>
+
+    <user_authority user_id="1" role="ROLE_ADMIN"/>
+    <user_authority user_id="1" role="ROLE_USER"/>
+</dataset>
