@@ -1,4 +1,4 @@
-package com.mamadou.sk.uaaservice.user.web;
+package com.mamadou.sk.uaaservice.user.web.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
