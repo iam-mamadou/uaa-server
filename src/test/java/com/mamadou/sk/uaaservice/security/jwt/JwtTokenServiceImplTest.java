@@ -31,7 +31,7 @@ public class JwtTokenServiceImplTest {
     private static final String ADMIN_USERNAME = "admin";
     private static final String TOKEN_ISSUER = "uaa-service";
     private static final String TOKEN_SECRET = "secret";
-    private static final long TOKEN_EXPIRATION = 5L;
+    private static final long TOKEN_EXPIRATION = 2L;
     @Mock
     private Authentication authentication;
     private JwtTokenService jwtTokenService;
