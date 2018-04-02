@@ -3,7 +3,6 @@ package com.mamadou.sk.uaaservice.user.service;
 import com.mamadou.sk.uaaservice.user.entitity.User;
 import org.springframework.stereotype.Service;
 
-@Service
 public interface UserService {
 
 

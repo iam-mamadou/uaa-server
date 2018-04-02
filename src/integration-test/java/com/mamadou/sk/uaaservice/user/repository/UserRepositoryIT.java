@@ -21,8 +21,8 @@ public class UserRepositoryIT extends AbstractIntegrationTest{
     private UserRepository userRepository;
 
     @Test
-    @DatabaseSetup("/datasets/user_setup.xml")
-    @ExpectedDatabase("/datasets/user_expected.xml")
+    @DatabaseSetup("/datasets/user/user_setup.xml")
+    @ExpectedDatabase("/datasets/user/user_expected.xml")
     public void findByUsername_shouldReturnUserAssociatedWithUsername_whenFound() {
         // when
         userRepository.findByUsername(ADMIN_USERNAME);
@@ -31,7 +31,7 @@ public class UserRepositoryIT extends AbstractIntegrationTest{
     }
 
     @Test
-    @DatabaseSetup("/datasets/user_setup.xml")
+    @DatabaseSetup("/datasets/user/user_setup.xml")
     public void findByUsername_shouldReturnEmpty_whenUserWithUsernameIsNotFound() {
         // when
         Optional<User> user = userRepository.findByUsername(NON_EXISTING_USER);
@@ -41,8 +41,8 @@ public class UserRepositoryIT extends AbstractIntegrationTest{
     }
 
     @Test
-    @DatabaseSetup("/datasets/user_setup.xml")
-    @ExpectedDatabase("/datasets/user_expected.xml")
+    @DatabaseSetup("/datasets/user/user_setup.xml")
+    @ExpectedDatabase("/datasets/user/user_expected.xml")
     public void findByEmail_shouldReturnUser_whenUserWithEmailIsFound() {
         // when
         userRepository.findByEmail(ADMIN_EMAIL);
@@ -51,7 +51,7 @@ public class UserRepositoryIT extends AbstractIntegrationTest{
     }
 
     @Test
-    @DatabaseSetup("/datasets/user_setup.xml")
+    @DatabaseSetup("/datasets/user/user_setup.xml")
     public void findByEmail_shouldReturnEmpty_whenUserWithEmailIsNoyFound() {
         // when
         Optional<User> user = userRepository.findByEmail(NON_EXISTING_EMAIL);
