@@ -11,10 +11,6 @@
             locked="false"
     />
 
-    <!--give admin user and admin role-->
-    <authority role="ROLE_ADMIN"/>
-    <authority role="ROLE_USER"/>
-
     <user_authority user_id="1" role="ROLE_ADMIN"/>
     <user_authority user_id="1" role="ROLE_USER"/>
 </dataset>

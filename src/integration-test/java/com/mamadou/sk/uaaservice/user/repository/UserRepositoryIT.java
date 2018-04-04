@@ -3,7 +3,6 @@ package com.mamadou.sk.uaaservice.user.repository;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseSetups;
-import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.mamadou.sk.uaaservice.AbstractIntegrationTest;
 import com.mamadou.sk.uaaservice.user.entitity.User;
 import org.junit.Test;
@@ -25,8 +24,8 @@ public class UserRepositoryIT extends AbstractIntegrationTest {
 
     @Test
     @DatabaseSetups({
-            @DatabaseSetup("/datasets/user/admin_user_authorities_setup.xml"),
-            @DatabaseSetup("/datasets/user/user_setup.xml")
+            @DatabaseSetup("/datasets/user/admin_user_roles_setup.xml"),
+            @DatabaseSetup("/datasets/user/user_admin_setup.xml")
     })
     public void findByUsername_shouldReturnUserAssociatedWithUsername_whenFound() {
         // when
@@ -38,8 +37,8 @@ public class UserRepositoryIT extends AbstractIntegrationTest {
 
     @Test
     @DatabaseSetups({
-            @DatabaseSetup("/datasets/user/admin_user_authorities_setup.xml"),
-            @DatabaseSetup("/datasets/user/user_setup.xml")
+            @DatabaseSetup("/datasets/user/admin_user_roles_setup.xml"),
+            @DatabaseSetup("/datasets/user/user_admin_setup.xml")
     })
     public void findByUsername_shouldReturnEmpty_whenUserWithUsernameIsNotFound() {
         // when
@@ -51,8 +50,8 @@ public class UserRepositoryIT extends AbstractIntegrationTest {
 
     @Test
     @DatabaseSetups({
-            @DatabaseSetup("/datasets/user/admin_user_authorities_setup.xml"),
-            @DatabaseSetup("/datasets/user/user_setup.xml")
+            @DatabaseSetup("/datasets/user/admin_user_roles_setup.xml"),
+            @DatabaseSetup("/datasets/user/user_admin_setup.xml")
     })
     public void findByEmail_shouldReturnUser_whenUserWithEmailIsFound() {
         // when
@@ -64,8 +63,8 @@ public class UserRepositoryIT extends AbstractIntegrationTest {
 
     @Test
     @DatabaseSetups({
-            @DatabaseSetup("/datasets/user/admin_user_authorities_setup.xml"),
-            @DatabaseSetup("/datasets/user/user_setup.xml")
+            @DatabaseSetup("/datasets/user/admin_user_roles_setup.xml"),
+            @DatabaseSetup("/datasets/user/user_admin_setup.xml")
     })
     public void findByEmail_shouldReturnEmpty_whenUserWithEmailIsNoyFound() {
         // when

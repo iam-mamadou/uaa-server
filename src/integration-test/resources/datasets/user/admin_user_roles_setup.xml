@@ -1,0 +1,5 @@
+<dataset>
+    <!-- give admin user and admin role-->
+    <authority role="ROLE_ADMIN"/>
+    <authority role="ROLE_USER"/>
+</dataset>
