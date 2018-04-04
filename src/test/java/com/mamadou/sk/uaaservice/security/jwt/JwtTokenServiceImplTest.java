@@ -46,8 +46,9 @@ public class JwtTokenServiceImplTest {
         ReflectionTestUtils.setField(jwtTokenService, "secret", TOKEN_SECRET);
 
         // set up new authenticated user
-        User admin = new User().setUsername(ADMIN_USERNAME)
-                               .setAuthorities(Lists.newArrayList(new Authority(ROLE_ADMIN)));
+        User admin = new User();
+        admin.setUsername(ADMIN_USERNAME);
+        admin.setAuthorities(Lists.newArrayList(new Authority(ROLE_ADMIN)));
         given(authentication.getPrincipal()).willReturn(new CustomUserDetails(admin));
     }
 

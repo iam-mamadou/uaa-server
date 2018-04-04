@@ -43,12 +43,13 @@ public class UserServiceImplTest {
     @Test
     public void createUser_shouldCreateNewUserSuccessfully() {
         // given
-        User newUser = new User().setFirstName("first")
-                                 .setPassword("last")
-                                 .setUsername(ADMIN_USERNAME)
-                                 .setEmail(ADMIN_EMAIL)
-                                 .setPassword("password")
-                                 .setAuthorities(Arrays.asList(new Authority("ROLE_USER")));
+        User newUser = new User();
+        newUser.setFirstName("first");
+        newUser.setPassword("last");
+        newUser.setUsername(ADMIN_USERNAME);
+        newUser.setEmail(ADMIN_EMAIL);
+        newUser.setPassword("password");
+        newUser.setAuthorities(Arrays.asList(new Authority("ROLE_USER")));
 
         // when
         userService.createUser(newUser);
@@ -60,10 +61,12 @@ public class UserServiceImplTest {
     @Test
     public void createUser_shouldThrowUsernameAlreadyExists_whenUsernameAlreadyUsed() {
         // given
-        User existingUser = new User().setUsername(ADMIN_USERNAME);
+        User existingUser = new User();
+        existingUser.setUsername(ADMIN_USERNAME);
         given(userRepository.findByUsername(anyString())).willReturn(Optional.of(existingUser));
 
-        User newUser = new User().setUsername(ADMIN_USERNAME);
+        User newUser = new User();
+        newUser.setUsername(ADMIN_USERNAME);
         // throw
         thrown.expect(UsernameAlreadyExistsException.class);
         thrown.expectMessage("Username already exists");
@@ -75,10 +78,12 @@ public class UserServiceImplTest {
     @Test
     public void createUser_shouldThrowEmailAlreadyExists_whenEmailAddressAlreadyUsed() {
         // given
-        User existingUser = new User().setEmail(ADMIN_EMAIL);
+        User existingUser = new User();
+        existingUser.setEmail(ADMIN_EMAIL);
         given(userRepository.findByEmail(anyString())).willReturn(Optional.of(existingUser));
 
-        User newUser = new User().setEmail(ADMIN_EMAIL);
+        User newUser = new User();
+        newUser.setEmail(ADMIN_EMAIL);
         // throw
         thrown.expect(EmailAlreadyExistsException.class);
         thrown.expectMessage("Email already exists");

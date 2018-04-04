@@ -2,6 +2,7 @@ package com.mamadou.sk.uaaservice.user.entitity;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,6 +22,7 @@ import java.util.List;
 @Table(name = "user")
 @Getter
 @EqualsAndHashCode
+@Setter
 public class User {
 
     @Id
@@ -55,58 +57,4 @@ public class User {
     private boolean locked;
 
     private boolean expired;
-
-    /**
-     *      Generate setters using builder. Note that JPA expect you use java bean convention 'set',
-     *      however hibernate does not have constrain on how you generate your setters.
-     */
-    public User setUserId(Long userId) {
-        this.userId = userId;
-        return this;
-    }
-
-    public User setFirstName(String firstName) {
-        this.firstName = firstName;
-        return this;
-    }
-
-    public User setLastName(String lastName) {
-        this.lastName = lastName;
-        return this;
-    }
-
-    public User setUsername(String username) {
-        this.username = username;
-        return this;
-    }
-
-    public User setEmail(String email) {
-        this.email = email;
-        return this;
-    }
-
-    public User setAuthorities(List<Authority> authorities) {
-        this.authorities = authorities;
-        return this;
-    }
-
-    public User setPassword(String password) {
-        this.password = password;
-        return this;
-    }
-
-    public User setEnabled(boolean enabled) {
-        this.enabled = enabled;
-        return this;
-    }
-
-    public User setLocked(boolean locked) {
-        this.locked = locked;
-        return this;
-    }
-
-    public User setExpired(boolean expired) {
-        this.expired = expired;
-        return this;
-    }
 }
