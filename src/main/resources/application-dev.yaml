@@ -1,15 +1,18 @@
+logging:
+  level:
+    ROOT: INFO
+
 spring:
   datasource:
     url: jdbc:h2:mem:uaa_db
     username: root
-    password: root
+    password:
   jpa:
     show-sql: true
   h2:
     console:
       enabled: true
       path: /h2-console # default
-
   # flyway
   flyway:
     enable: true
@@ -17,5 +20,5 @@ spring:
 
 # jwt
 jwt:
-  expiration: 2 # in minutes
+  expiration: 20 # in minutes
   secret: bob-marley

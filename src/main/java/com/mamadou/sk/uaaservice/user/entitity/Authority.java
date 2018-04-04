@@ -17,7 +17,6 @@ import javax.persistence.Table;
 public class Authority {
 
     @Id
-    @Column(name = "role", unique = true)
     private String role;
 
 }

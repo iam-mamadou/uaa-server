@@ -8,5 +8,5 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {UaaServiceApplication.class})
 @ActiveProfiles("test")
-public abstract class AbstractIntegrationTest extends DbUnitConfiguration{
+public abstract class AbstractIntegrationTest extends DbUnitConfiguration {
 }
