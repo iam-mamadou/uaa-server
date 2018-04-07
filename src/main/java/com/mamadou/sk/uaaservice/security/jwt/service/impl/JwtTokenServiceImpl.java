@@ -1,5 +1,7 @@
-package com.mamadou.sk.uaaservice.security.jwt;
+package com.mamadou.sk.uaaservice.security.jwt.service.impl;
 
+import com.mamadou.sk.uaaservice.security.jwt.mapper.GrantedAuthorityMapper;
+import com.mamadou.sk.uaaservice.security.jwt.service.JwtTokenService;
 import com.mamadou.sk.uaaservice.security.user.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -7,21 +9,17 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.lang.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -37,7 +35,11 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     @Value("${jwt.secret}")
     private String secret;
 
-    private ZonedDateTime now = ZonedDateTime.now();
+    private GrantedAuthorityMapper authorityMapper;
+
+    public JwtTokenServiceImpl(GrantedAuthorityMapper authorityMapper) {
+        this.authorityMapper = authorityMapper;
+    }
 
     @Override
     public String generate(Authentication authentication) {
@@ -47,7 +49,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                    .setIssuer(applicationName)
                    .setIssuedAt(createdDate())
                    .setSubject(user.getUsername())
-                   .claim("auth", authorities(user.getAuthorities()))
+                   .claim("auth", authorityMapper.authorities(user.getAuthorities()))
                    .setExpiration(expirationDate())
                    .signWith(SignatureAlgorithm.HS512, secret)
                    .compact();
@@ -61,9 +63,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                                   .parse(jwt)
                                   .getBody();
         List<String> authorityClaim = ((List<String>) body.get("auth"));
-        List<SimpleGrantedAuthority> authorities = authorityClaim.stream()
-                                                                 .map(SimpleGrantedAuthority::new)
-                                                                 .collect(Collectors.toList());
+        List<SimpleGrantedAuthority> authorities = authorityMapper.toSimpleGrantedAuthorities(authorityClaim);
         return new UsernamePasswordAuthenticationToken(body.getSubject(), jwt, authorities);
     }
 
@@ -85,24 +85,13 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     }
 
     /**
-     * convert List of GrantedAuthority to an array of String
-     *
-     * @param authorities - user granted authorities
-     * @return array of authorities
-     */
-    private String[] authorities(Collection<? extends GrantedAuthority> authorities) {
-        return Strings.toStringArray(authorities.stream()
-                                                .map(GrantedAuthority::getAuthority)
-                                                .collect(Collectors.toList()));
-    }
-
-    /**
      * set token expiration date
-     *
+     * The expiration date is calculate by taking current time plus the given
+     * {jwt.expiration} value from the application properties
      * @return expiration date
      */
     private Date expirationDate() {
-        ZonedDateTime expirationDate = now.plusMinutes(expiration);
+        ZonedDateTime expirationDate = ZonedDateTime.now().plusMinutes(expiration);
         return Date.from(expirationDate.toInstant());
     }
 
@@ -112,7 +101,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
      * @return issued date
      */
     private Date createdDate() {
-        return Date.from(now.toInstant());
+        return new Date();
     }
 
 }

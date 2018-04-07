@@ -1,5 +1,9 @@
 package com.mamadou.sk.uaaservice.security.jwt;
 
+import com.mamadou.sk.uaaservice.security.jwt.mapper.GrantedAuthorityMapper;
+import com.mamadou.sk.uaaservice.security.jwt.mapper.impl.GrantedAuthorityMapperImpl;
+import com.mamadou.sk.uaaservice.security.jwt.service.JwtTokenService;
+import com.mamadou.sk.uaaservice.security.jwt.service.impl.JwtTokenServiceImpl;
 import com.mamadou.sk.uaaservice.security.user.CustomUserDetails;
 import com.mamadou.sk.uaaservice.user.entitity.Authority;
 import com.mamadou.sk.uaaservice.user.entitity.User;
@@ -38,7 +42,8 @@ public class JwtTokenServiceImplTest {
 
     @Before
     public void setUp() {
-        jwtTokenService = new JwtTokenServiceImpl();
+        GrantedAuthorityMapper authorityMapper = new GrantedAuthorityMapperImpl();
+        jwtTokenService = new JwtTokenServiceImpl(authorityMapper);
 
         // setup environment variable that are required by the JwtService
         ReflectionTestUtils.setField(jwtTokenService, "applicationName", TOKEN_ISSUER);

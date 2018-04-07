@@ -1,8 +1,8 @@
 package com.mamadou.sk.uaaservice.user.web.mapper.impl;
 
 import com.mamadou.sk.uaaservice.user.entitity.Authority;
-import com.mamadou.sk.uaaservice.user.web.mapper.AuthorityMapper;
 import com.mamadou.sk.uaaservice.user.web.dto.AuthorityDTO;
+import com.mamadou.sk.uaaservice.user.web.mapper.AuthorityMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -24,6 +24,15 @@ public class AuthorityMapperImpl implements AuthorityMapper {
         return Stream.of(authorities)
                      .map(Authority::new)
                      .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AuthorityDTO> toAuthorityDTOs(List<Authority> authorities) {
+        return authorities.stream()
+                            .map(authority -> AuthorityDTO.builder()
+                                                          .role(authority.getRole())
+                                                          .build())
+                            .collect(Collectors.toList());
     }
 
     @Override

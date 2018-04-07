@@ -1,4 +1,4 @@
-package com.mamadou.sk.uaaservice.security.jwt;
+package com.mamadou.sk.uaaservice.security.jwt.service;
 
 import org.springframework.security.core.Authentication;
 

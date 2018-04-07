@@ -1,5 +1,6 @@
-package com.mamadou.sk.uaaservice.security.jwt;
+package com.mamadou.sk.uaaservice.security.jwt.filter;
 
+import com.mamadou.sk.uaaservice.security.jwt.service.JwtTokenService;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;

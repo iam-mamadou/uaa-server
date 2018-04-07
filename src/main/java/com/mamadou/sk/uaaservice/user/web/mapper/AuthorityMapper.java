@@ -27,6 +27,13 @@ public interface AuthorityMapper {
      */
     List<Authority> toAuthorities(String... authorities);
 
+    /**
+     * Convert List of Authorities to AuthorityDTOs
+     * @param authorities - list of authorities
+     * @return list AuthoritDTO
+     */
+    List<AuthorityDTO> toAuthorityDTOs(List<Authority> authorities);
+
 
     /**
      * convert one or more authorities of type String to a List of Authority DTOs

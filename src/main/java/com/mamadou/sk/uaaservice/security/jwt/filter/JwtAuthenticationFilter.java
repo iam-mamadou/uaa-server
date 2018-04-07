@@ -1,6 +1,7 @@
-package com.mamadou.sk.uaaservice.security.jwt;
+package com.mamadou.sk.uaaservice.security.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mamadou.sk.uaaservice.security.jwt.service.JwtTokenService;
 import com.mamadou.sk.uaaservice.user.entitity.User;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

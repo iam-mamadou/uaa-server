@@ -1,5 +1,6 @@
 package com.mamadou.sk.uaaservice.user.web.controller;
 
+import com.mamadou.sk.uaaservice.user.entitity.User;
 import com.mamadou.sk.uaaservice.user.exception.EmailAlreadyExistsException;
 import com.mamadou.sk.uaaservice.user.exception.UsernameAlreadyExistsException;
 import com.mamadou.sk.uaaservice.user.service.UserService;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 
 /**
@@ -49,12 +52,13 @@ public class UserResource {
      *          if userId is provided as part of the request
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity createUser(@RequestBody @Valid UserDTO newUserDTO) {
+    public ResponseEntity createUser(@RequestBody @Valid UserDTO newUserDTO) throws URISyntaxException {
         if (newUserDTO.getUserId() != null ) {
             return buildBadRequestResponse("new user can't have id");
         } else {
-            userService.createUser(userMapper.toEntity(newUserDTO));
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            User savedUser = userService.createUser(userMapper.toEntity(newUserDTO));
+            return ResponseEntity.created(new URI("/api/v1/users/" + savedUser.getUserId()))
+                                 .body(userMapper.toDTO(savedUser));
         }
     }
 

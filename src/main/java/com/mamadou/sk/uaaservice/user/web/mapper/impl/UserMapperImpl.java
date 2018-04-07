@@ -1,21 +1,51 @@
 package com.mamadou.sk.uaaservice.user.web.mapper.impl;
 
+import com.mamadou.sk.uaaservice.user.entitity.Authority;
 import com.mamadou.sk.uaaservice.user.entitity.User;
+import com.mamadou.sk.uaaservice.user.web.dto.AuthorityDTO;
 import com.mamadou.sk.uaaservice.user.web.dto.UserDTO;
+import com.mamadou.sk.uaaservice.user.web.mapper.AuthorityMapper;
 import com.mamadou.sk.uaaservice.user.web.mapper.UserMapper;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @AllArgsConstructor
 @Component
 public class UserMapperImpl implements UserMapper {
 
-    private ModelMapper modelMapper;
+    private AuthorityMapper authorityMapper;
 
     @Override
     public User toEntity(UserDTO userDTO) {
-        return modelMapper.map(userDTO, User.class);
+        List<Authority> authorities = authorityMapper.toAuthorities(userDTO.getAuthorities());
+        User user = new User();
+        user.setUserId(userDTO.getUserId());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
+        user.setAuthorities(authorities);
+        user.setEnabled(userDTO.isEnabled());
+        user.setExpired(userDTO.isExpired());
+        user.setLocked(userDTO.isLocked());
+        return user;
     }
 
+    @Override
+    public UserDTO toDTO(User user) {
+        List<AuthorityDTO> authorityDTOs = authorityMapper.toAuthorityDTOs(user.getAuthorities());
+        return UserDTO.builder()
+                      .userId(user.getUserId())
+                      .firstName(user.getFirstName())
+                      .lastName(user.getLastName())
+                      .username(user.getUsername())
+                      .email(user.getEmail())
+                      .password(user.getPassword())
+                      .authorities(authorityDTOs)
+                      .enabled(true).expired(true).locked(true)
+                      .build();
+    }
 }

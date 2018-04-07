@@ -62,9 +62,6 @@ dependencies {
 	// spring actuator
 	compile('org.springframework.boot:spring-boot-starter-actuator')
 
-	// mapping objects types
-	compile('org.modelmapper:modelmapper:1.1.0')
-
 	// test
 	testCompile('org.dbunit:dbunit:2.5.4')
 	testCompile('com.github.springtestdbunit:spring-test-dbunit:1.3.0')

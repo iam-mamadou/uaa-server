@@ -6,8 +6,6 @@ import com.mamadou.sk.uaaservice.user.exception.UsernameAlreadyExistsException;
 import com.mamadou.sk.uaaservice.user.repository.UserRepository;
 import com.mamadou.sk.uaaservice.user.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,13 +21,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void createUser(User newUser) {
+    public User createUser(User newUser) {
         throwExceptionIfUsernameExists(newUser);
 
         throwExceptionIfEmailExists(newUser);
 
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        userRepository.save(newUser);
+        return userRepository.save(newUser);
     }
 
     private void throwExceptionIfUsernameExists(User newUser) {

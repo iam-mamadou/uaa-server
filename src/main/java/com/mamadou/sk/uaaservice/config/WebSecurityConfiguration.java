@@ -1,8 +1,8 @@
 package com.mamadou.sk.uaaservice.config;
 
-import com.mamadou.sk.uaaservice.security.jwt.JwtAuthenticationFilter;
-import com.mamadou.sk.uaaservice.security.jwt.JwtAuthorizationFilter;
-import com.mamadou.sk.uaaservice.security.jwt.JwtTokenService;
+import com.mamadou.sk.uaaservice.security.jwt.filter.JwtAuthenticationFilter;
+import com.mamadou.sk.uaaservice.security.jwt.filter.JwtAuthorizationFilter;
+import com.mamadou.sk.uaaservice.security.jwt.service.JwtTokenService;
 import com.mamadou.sk.uaaservice.security.user.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
