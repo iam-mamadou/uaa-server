@@ -1,28 +1,79 @@
 package com.mamadou.sk.uaaservice.user.web.controller;
 
+import com.mamadou.sk.uaaservice.user.exception.EmailAlreadyExistsException;
+import com.mamadou.sk.uaaservice.user.exception.UsernameAlreadyExistsException;
 import com.mamadou.sk.uaaservice.user.service.UserService;
 import com.mamadou.sk.uaaservice.user.web.dto.UserDTO;
+import com.mamadou.sk.uaaservice.user.web.error.ErrorResponse;
 import com.mamadou.sk.uaaservice.user.web.mapper.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
+
+/**
+ * Rest Controller for user operations.
+ * These operations can't only accessed by admin for managing users
+ * Here are supported operations:
+ *      POST - create new user
+ *      PUT - update existing user
+ *      DELETE - delete user
+ *      GET - get user
+ */
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
 @AllArgsConstructor
 public class UserResource {
+
     private UserService userService;
     private UserMapper userMapper;
 
+    /**
+     * POST /uua/api/v1/users
+     *
+     * Endpoint for creating a new user.
+     * If the username provided already exists an exception is thrown
+     * Similarly, if email provided already exists an exception will be thrown.
+     *
+     * @param newUserDTO - new user to created
+     * @return  Response Entity with created status code.
+     *          Response Entity with bad request status code is returned
+     *          if userId is provided as part of the request
+     */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> createUser(@RequestBody UserDTO newUserDTO) {
-        userService.createUser(userMapper.toEntity(newUserDTO));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity createUser(@RequestBody @Valid UserDTO newUserDTO) {
+        if (newUserDTO.getUserId() != null ) {
+            return buildBadRequestResponse("new user can't have id");
+        } else {
+            userService.createUser(userMapper.toEntity(newUserDTO));
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
     }
 
+    /**
+     * handle UsernameAlreadyExistsException or throw EmailAlreadyExistsException from the service
+     * @param e - exception thrown due to existing username or existing email
+     * @return ErrorResponse entity with bad request status
+     */
+    @ExceptionHandler(value = { UsernameAlreadyExistsException.class, EmailAlreadyExistsException.class})
+    public ResponseEntity<ErrorResponse> handleUsernameOrEmailAlreadyExistsException(RuntimeException e) {
+        return buildBadRequestResponse(e.getMessage());
+    }
+
+    private ResponseEntity<ErrorResponse> buildBadRequestResponse(String message) {
+        return ResponseEntity.badRequest()
+                             .body(ErrorResponse.builder()
+                                                .status(HttpStatus.BAD_REQUEST.value())
+                                                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                                                .message(message)
+                                                .build());
+    }
 }
