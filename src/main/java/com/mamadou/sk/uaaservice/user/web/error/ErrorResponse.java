@@ -18,7 +18,12 @@ import java.util.List;
  * {
  *     "status": 400,
  *     "error": "Bad Request",
- *     "description": "Username already exists"
+ *     "description": "Invalid field(s)"
+ *     "errors": [
+ *          "field": username,
+ *          "description": "Username is required"
+ *
+ *     ]
  * }
  */
 @Builder
@@ -29,25 +34,26 @@ public class ErrorResponse {
     /**
      * http status code
      */
-    private int status;
+    private final int status;
 
     /**
      * Http status code name
      */
-    private String error;
+    private final String error;
 
     /**
      * Error description
      */
-    private String message;
+    private final String message;
 
     /**
      * Sub errors
      */
     @Singular
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    private List<SubErrorResponse> errors = new ArrayList<>();
+    private final List<SubErrorResponse> errors;
 
     @JsonPOJOBuilder(withPrefix = "")
-    public static final class ErrorResponseBuilder { }
+    public static final class ErrorResponseBuilder {
+    }
 }
