@@ -16,4 +16,12 @@ public interface UserService {
      * @return created user
      */
     User createUser(User newUser);
+
+    /**
+     * Find existing user by userId
+     * UserIdNotFoundException will be thrown if user does not exist
+     * @param userId - user id
+     * @return User
+     */
+    User getUserById(Long userId);
 }

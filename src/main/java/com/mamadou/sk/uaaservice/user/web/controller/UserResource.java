@@ -2,6 +2,7 @@ package com.mamadou.sk.uaaservice.user.web.controller;
 
 import com.mamadou.sk.uaaservice.user.entitity.User;
 import com.mamadou.sk.uaaservice.user.exception.EmailAlreadyExistsException;
+import com.mamadou.sk.uaaservice.user.exception.UserIdNotFoundException;
 import com.mamadou.sk.uaaservice.user.exception.UsernameAlreadyExistsException;
 import com.mamadou.sk.uaaservice.user.service.UserService;
 import com.mamadou.sk.uaaservice.user.web.dto.UserDTO;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +54,7 @@ public class UserResource {
      *          Response Entity with bad request status code is returned
      *          if userId is provided as part of the request
      */
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity createUser(@RequestBody @Valid UserDTO newUserDTO) throws URISyntaxException {
         if (newUserDTO.getUserId() != null ) {
             return buildBadRequestResponse("new user can't have id");
@@ -63,12 +66,32 @@ public class UserResource {
     }
 
     /**
-     * handle UsernameAlreadyExistsException or throw EmailAlreadyExistsException from the service
-     * @param e - exception thrown due to existing username or existing email
-     * @return ErrorResponse entity with bad request status
+     * GET /api/v1/users/{userId}
+     *
+     * Endpoint for finding an existing user by Id
+     * An UserIdNotFoundException will be thrown if user does not exists
+     *
+     * @return UserDTO response entity with OK status code.
+     *         else return 404 status code if user is not found
      */
-    @ExceptionHandler(value = { UsernameAlreadyExistsException.class, EmailAlreadyExistsException.class})
-    public ResponseEntity<ErrorResponse> handleUsernameOrEmailAlreadyExistsException(RuntimeException e) {
+    @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId) {
+        User existingUser = userService.getUserById(userId);
+        return ResponseEntity.ok(userMapper.toDTO(existingUser));
+    }
+
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException e) {
+        return buildBadRequestResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException e) {
+        return buildBadRequestResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(UserIdNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserIdNotFoundException(UserIdNotFoundException e) {
         return buildBadRequestResponse(e.getMessage());
     }
 

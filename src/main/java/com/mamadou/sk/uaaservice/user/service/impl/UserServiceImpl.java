@@ -2,6 +2,7 @@ package com.mamadou.sk.uaaservice.user.service.impl;
 
 import com.mamadou.sk.uaaservice.user.entitity.User;
 import com.mamadou.sk.uaaservice.user.exception.EmailAlreadyExistsException;
+import com.mamadou.sk.uaaservice.user.exception.UserIdNotFoundException;
 import com.mamadou.sk.uaaservice.user.exception.UsernameAlreadyExistsException;
 import com.mamadou.sk.uaaservice.user.repository.UserRepository;
 import com.mamadou.sk.uaaservice.user.service.UserService;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static java.text.MessageFormat.format;
 
 @AllArgsConstructor
 @Service
@@ -28,6 +31,12 @@ public class UserServiceImpl implements UserService {
 
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         return userRepository.save(newUser);
+    }
+
+    @Override
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                             .orElseThrow(() -> new UserIdNotFoundException(format("User with id {0} is not found", userId)));
     }
 
     private void throwExceptionIfUsernameExists(User newUser) {

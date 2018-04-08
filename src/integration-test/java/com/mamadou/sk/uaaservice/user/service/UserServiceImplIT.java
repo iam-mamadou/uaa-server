@@ -1,9 +1,12 @@
 package com.mamadou.sk.uaaservice.user.service;
 
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseSetups;
 import com.mamadou.sk.uaaservice.AbstractIntegrationTest;
 import com.mamadou.sk.uaaservice.user.entitity.Authority;
 import com.mamadou.sk.uaaservice.user.entitity.User;
 import com.mamadou.sk.uaaservice.user.exception.EmailAlreadyExistsException;
+import com.mamadou.sk.uaaservice.user.exception.UserIdNotFoundException;
 import com.mamadou.sk.uaaservice.user.exception.UsernameAlreadyExistsException;
 import com.mamadou.sk.uaaservice.user.repository.UserRepository;
 import com.mamadou.sk.uaaservice.user.web.mapper.AuthorityMapper;
@@ -91,5 +94,29 @@ public class UserServiceImplIT extends AbstractIntegrationTest {
 
         // when
         userService.createUser(newUser);
+    }
+
+    @Test
+    @DatabaseSetups({
+            @DatabaseSetup("/datasets/user/admin_user_roles_setup.xml"),
+            @DatabaseSetup("/datasets/user/user_admin_setup.xml")
+    })
+    public void getUserById_shouldReturnUserAssociatedWithId_whenFound() {
+
+        // when
+        User existingUser = userService.getUserById(1L);
+        // then
+        assertThat(existingUser).extracting("username", "email")
+                                .contains("admin", "admin@email.com");
+    }
+
+    @Test
+    public void getUserById_shouldThrowUserIdNotFoundException_whenUserDoesNotExists() {
+        // throw
+        thrown.expect(UserIdNotFoundException.class);
+        thrown.expectMessage("User with id 999 is not found");
+
+        // when
+        userService.getUserById(999L);
     }
 }

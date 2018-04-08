@@ -4,6 +4,7 @@ package com.mamadou.sk.uaaservice.user.service;
 import com.mamadou.sk.uaaservice.user.entitity.Authority;
 import com.mamadou.sk.uaaservice.user.entitity.User;
 import com.mamadou.sk.uaaservice.user.exception.EmailAlreadyExistsException;
+import com.mamadou.sk.uaaservice.user.exception.UserIdNotFoundException;
 import com.mamadou.sk.uaaservice.user.exception.UsernameAlreadyExistsException;
 import com.mamadou.sk.uaaservice.user.repository.UserRepository;
 import com.mamadou.sk.uaaservice.user.service.impl.UserServiceImpl;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -35,27 +37,29 @@ public class UserServiceImplTest {
 
     private UserService userService;
 
+    private User user;
+
     @Before
     public void setUp() {
         userService = new UserServiceImpl(userRepository, new BCryptPasswordEncoder());
+
+        // setup user
+        user = new User();
+        user.setFirstName("first");
+        user.setPassword("last");
+        user.setUsername(ADMIN_USERNAME);
+        user.setEmail(ADMIN_EMAIL);
+        user.setPassword("password");
+        user.setAuthorities(Arrays.asList(new Authority("ROLE_USER")));
     }
 
     @Test
     public void createUser_shouldCreateNewUserSuccessfully() {
-        // given
-        User newUser = new User();
-        newUser.setFirstName("first");
-        newUser.setPassword("last");
-        newUser.setUsername(ADMIN_USERNAME);
-        newUser.setEmail(ADMIN_EMAIL);
-        newUser.setPassword("password");
-        newUser.setAuthorities(Arrays.asList(new Authority("ROLE_USER")));
-
         // when
-        userService.createUser(newUser);
+        userService.createUser(user);
 
         // then
-        then(userRepository).should().save(newUser);
+        then(userRepository).should().save(user);
     }
 
     @Test
@@ -92,4 +96,28 @@ public class UserServiceImplTest {
         userService.createUser(newUser);
     }
 
+    @Test
+    public void getUserById_shouldReturnExistingUser_whenFound() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        // when
+        User existingUser = userService.getUserById(1L);
+
+        // then
+        assertThat(existingUser).extracting("username").contains(ADMIN_USERNAME);
+    }
+
+    @Test
+    public void getUserById_shouldThrowUserIdNotFoundException_whenUserDoesNotExists() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.empty());
+
+        // throw
+        thrown.expect(UserIdNotFoundException.class);
+        thrown.expectMessage("User with id 1 is not found");
+
+        // when
+        userService.getUserById(1L);
+    }
 }
