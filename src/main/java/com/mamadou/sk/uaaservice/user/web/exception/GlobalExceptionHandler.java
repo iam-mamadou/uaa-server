@@ -8,9 +8,12 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.text.MessageFormat.format;
 
 /**
  * Global Exception handling
@@ -19,13 +22,13 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     /**
-     * handle all unexpected Exceptions. this the exception is
+     * handle all unhandled Exceptions. this the exception is
      * not handle this will be returned to the client
      *
      * @return Error Response entity with internal server status code
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> unknownternalException() {
+    public ResponseEntity<ErrorResponse> fallbackException() {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                              .body(ErrorResponse.builder()
                                                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
@@ -38,7 +41,8 @@ public class GlobalExceptionHandler {
      * handle invalid argument exceptions
      *
      * @param e - MethodArgumentNotValidException
-     * @return ErrorResponse response entity with the associated sub errors
+     * @return ErrorResponse response entity including the associated sub errors
+     *         with bad request status
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleArgumentNotValidException(MethodArgumentNotValidException e) {
@@ -52,6 +56,21 @@ public class GlobalExceptionHandler {
                                                 .build());
     }
 
+    /**
+     * handle mismatch method argument type
+     * @param e - MethodArgumentTypeMismatchException
+     * @return Error Response entity with bad request status code
+     */
+    @ExceptionHandler({ MethodArgumentTypeMismatchException.class })
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e) {
+        String me = format("{0} should be a type {1}", e.getName(), e.getRequiredType().getSimpleName());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(ErrorResponse.builder()
+                                                .status(HttpStatus.BAD_REQUEST.value())
+                                                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                                                .message(me)
+                                                .build());
+    }
 
     private List<SubErrorResponse> toSubErrorResponse(List<FieldError> fieldErrors) {
         return fieldErrors.stream()
