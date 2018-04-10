@@ -9,6 +9,8 @@ import com.mamadou.sk.uaaservice.user.web.dto.UserDTO;
 import com.mamadou.sk.uaaservice.user.web.error.ErrorResponse;
 import com.mamadou.sk.uaaservice.user.web.mapper.UserMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -63,6 +65,25 @@ public class UserResource {
             return ResponseEntity.created(new URI("/api/v1/users/" + savedUser.getUserId()))
                                  .body(userMapper.toDTO(savedUser));
         }
+    }
+
+    /**
+     * GET /api/v1/users?page={pageNumber}&size={pageSize}&sort={propertyName},{asc|desc}&sort={propertyName},{asc|desc}
+     *
+     * Endpoint for retrieving all available users
+     * By default 20 users are returned per page. To change this value you can set the size param
+     * This is zero-based page index i.e the first page is 0
+     * If the sort criteria specified users will be ordered by userID in an ascending order
+     * fields can be sorted as follows:
+     *  sort=firstName&sort=username,asc
+     *
+     * @param pageable - pagination information
+     * @return Page of UserDTOs Response Entity with OK status code
+     */
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getAllUsers(Pageable pageable)  {
+        Page<User> users = userService.getAllUsers(pageable);
+        return ResponseEntity.ok(userMapper.toDTOPage(users));
     }
 
     /**

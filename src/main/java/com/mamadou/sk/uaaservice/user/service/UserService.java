@@ -1,6 +1,8 @@
 package com.mamadou.sk.uaaservice.user.service;
 
 import com.mamadou.sk.uaaservice.user.entitity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
@@ -24,4 +26,12 @@ public interface UserService {
      * @return User
      */
     User getUserById(Long userId);
+
+    /**
+     * Get all users
+     *
+     * @param pageable - pagination info
+     * @return a page of users
+     */
+    Page<User> getAllUsers(Pageable pageable);
 }

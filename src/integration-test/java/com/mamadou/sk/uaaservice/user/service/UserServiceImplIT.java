@@ -16,6 +16,9 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +35,7 @@ public class UserServiceImplIT extends AbstractIntegrationTest {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
+
     private User user;
 
     @Before
@@ -118,5 +122,19 @@ public class UserServiceImplIT extends AbstractIntegrationTest {
 
         // when
         userService.getUserById(999L);
+    }
+
+    @Test
+    @DatabaseSetups({
+            @DatabaseSetup("/datasets/user/admin_user_roles_setup.xml"),
+            @DatabaseSetup("/datasets/user/user_admin_setup.xml")
+    })
+    public void getAllUsers_shouldReturnOneUser_whenFound() {
+        // when
+        Page<User> allUsers = userService.getAllUsers(PageRequest.of(1, 20));
+
+        // then
+        assertThat(allUsers.getTotalElements()).isEqualTo(1);
+
     }
 }

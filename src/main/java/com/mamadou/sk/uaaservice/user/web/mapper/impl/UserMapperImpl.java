@@ -7,9 +7,11 @@ import com.mamadou.sk.uaaservice.user.web.dto.UserDTO;
 import com.mamadou.sk.uaaservice.user.web.mapper.AuthorityMapper;
 import com.mamadou.sk.uaaservice.user.web.mapper.UserMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.function.Function;
 
 @AllArgsConstructor
 @Component
@@ -47,5 +49,10 @@ public class UserMapperImpl implements UserMapper {
                       .authorities(authorityDTOs)
                       .enabled(true).expired(true).locked(true)
                       .build();
+    }
+
+    @Override
+    public Page<UserDTO> toDTOPage(Page<User> users) {
+        return users.map(this::toDTO);
     }
 }
