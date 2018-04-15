@@ -4,6 +4,8 @@ import com.mamadou.sk.uaaservice.user.entitity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 public interface UserService {
 
 
@@ -21,7 +23,7 @@ public interface UserService {
 
     /**
      * Find existing user by userId
-     * UserIdNotFoundException will be thrown if user does not exist
+     * UserNotFoundException will be thrown if user does not exist
      * @param userId - user id
      * @return User
      */
@@ -34,4 +36,13 @@ public interface UserService {
      * @return a page of users
      */
     Page<User> getAllUsers(Pageable pageable);
+
+    /**
+     * Update an exist user
+     *
+     * @param userId - existing user if
+     * @param user - user
+     * @return updated user
+     */
+    User updateUser(Long userId, User user);
 }

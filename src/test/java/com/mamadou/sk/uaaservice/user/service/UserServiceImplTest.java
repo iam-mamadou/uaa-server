@@ -4,7 +4,7 @@ package com.mamadou.sk.uaaservice.user.service;
 import com.mamadou.sk.uaaservice.user.entitity.Authority;
 import com.mamadou.sk.uaaservice.user.entitity.User;
 import com.mamadou.sk.uaaservice.user.exception.EmailAlreadyExistsException;
-import com.mamadou.sk.uaaservice.user.exception.UserIdNotFoundException;
+import com.mamadou.sk.uaaservice.user.exception.UserNotFoundException;
 import com.mamadou.sk.uaaservice.user.exception.UsernameAlreadyExistsException;
 import com.mamadou.sk.uaaservice.user.repository.UserRepository;
 import com.mamadou.sk.uaaservice.user.service.impl.UserServiceImpl;
@@ -114,7 +114,7 @@ public class UserServiceImplTest {
         given(userRepository.findById(1L)).willReturn(Optional.empty());
 
         // throw
-        thrown.expect(UserIdNotFoundException.class);
+        thrown.expect(UserNotFoundException.class);
         thrown.expectMessage("User with id 1 is not found");
 
         // when

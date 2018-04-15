@@ -2,7 +2,7 @@ package com.mamadou.sk.uaaservice.user.service.impl;
 
 import com.mamadou.sk.uaaservice.user.entitity.User;
 import com.mamadou.sk.uaaservice.user.exception.EmailAlreadyExistsException;
-import com.mamadou.sk.uaaservice.user.exception.UserIdNotFoundException;
+import com.mamadou.sk.uaaservice.user.exception.UserNotFoundException;
 import com.mamadou.sk.uaaservice.user.exception.UsernameAlreadyExistsException;
 import com.mamadou.sk.uaaservice.user.repository.UserRepository;
 import com.mamadou.sk.uaaservice.user.service.UserService;
@@ -38,12 +38,46 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
-                             .orElseThrow(() -> new UserIdNotFoundException(format("User with id {0} is not found", userId)));
+                             .orElseThrow(() -> new UserNotFoundException(format("User with id {0} is not found", userId)));
     }
 
     @Override
     public Page<User> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
+    }
+
+    @Override
+    @Transactional
+    public User updateUser(Long userId, User user) {
+        // validate username is not used by users
+        userRepository.findByUsername(user.getUsername())
+                      .ifPresent(u -> {
+                          if (!u.getUserId().equals(userId)) {
+                              throw new UsernameAlreadyExistsException("Username already exists");
+                          }
+                      });
+
+        // validate email is not used by users
+        userRepository.findByUsername(user.getUsername())
+                      .ifPresent(u -> {
+                          if (!u.getUserId().equals(userId)) {
+                              throw new EmailAlreadyExistsException("Email already exists");
+                          }
+                      });
+
+        return userRepository.findById(userId)
+                             .map(u -> {
+                                 u.setFirstName(user.getFirstName());
+                                 u.setLastName(user.getLastName());
+                                 u.setUsername(user.getUsername());
+                                 u.setPassword(passwordEncoder.encode(user.getPassword()));
+                                 u.setAuthorities(user.getAuthorities());
+                                 u.setEmail(user.getEmail());
+                                 u.setLocked(user.isLocked());
+                                 u.setEnabled(user.isEnabled());
+                                 u.setExpired(user.isExpired());
+                                 return u; })
+                             .orElseThrow(() -> new UserNotFoundException(format("User with id {0} is not found", user.getUserId())));
     }
 
     private void throwExceptionIfUsernameExists(User newUser) {

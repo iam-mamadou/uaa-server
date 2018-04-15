@@ -6,7 +6,7 @@ import com.mamadou.sk.uaaservice.AbstractIntegrationTest;
 import com.mamadou.sk.uaaservice.user.entitity.Authority;
 import com.mamadou.sk.uaaservice.user.entitity.User;
 import com.mamadou.sk.uaaservice.user.exception.EmailAlreadyExistsException;
-import com.mamadou.sk.uaaservice.user.exception.UserIdNotFoundException;
+import com.mamadou.sk.uaaservice.user.exception.UserNotFoundException;
 import com.mamadou.sk.uaaservice.user.exception.UsernameAlreadyExistsException;
 import com.mamadou.sk.uaaservice.user.repository.UserRepository;
 import com.mamadou.sk.uaaservice.user.web.mapper.AuthorityMapper;
@@ -18,7 +18,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +39,6 @@ public class UserServiceImplIT extends AbstractIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         List<Authority> authorities = authorityMapper.toAuthorities("ROLE_USER");
 
         user = new User();
@@ -117,7 +115,7 @@ public class UserServiceImplIT extends AbstractIntegrationTest {
     @Test
     public void getUserById_shouldThrowUserIdNotFoundException_whenUserDoesNotExists() {
         // throw
-        thrown.expect(UserIdNotFoundException.class);
+        thrown.expect(UserNotFoundException.class);
         thrown.expectMessage("User with id 999 is not found");
 
         // when

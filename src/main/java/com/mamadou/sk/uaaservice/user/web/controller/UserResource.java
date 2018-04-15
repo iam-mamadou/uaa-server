@@ -2,7 +2,7 @@ package com.mamadou.sk.uaaservice.user.web.controller;
 
 import com.mamadou.sk.uaaservice.user.entitity.User;
 import com.mamadou.sk.uaaservice.user.exception.EmailAlreadyExistsException;
-import com.mamadou.sk.uaaservice.user.exception.UserIdNotFoundException;
+import com.mamadou.sk.uaaservice.user.exception.UserNotFoundException;
 import com.mamadou.sk.uaaservice.user.exception.UsernameAlreadyExistsException;
 import com.mamadou.sk.uaaservice.user.service.UserService;
 import com.mamadou.sk.uaaservice.user.web.dto.UserDTO;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -90,15 +91,32 @@ public class UserResource {
      * GET /api/v1/users/{userId}
      *
      * Endpoint for finding an existing user by Id
-     * An UserIdNotFoundException will be thrown if user does not exists
+     * UserNotFoundException will be thrown if user does not exists
      *
-     * @return UserDTO response entity with OK status code.
+     * @return UserDTO response entity with 200 status code.
      *         else return 404 status code if user is not found
      */
     @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId) {
         User existingUser = userService.getUserById(userId);
         return ResponseEntity.ok(userMapper.toDTO(existingUser));
+    }
+
+    /**
+     * PUT /api/v1/users/{userId}
+     *
+     * Endpoint for updating an existing user by id
+     * UserNotFoundException will be thrown if user is not associated with the given id
+     *
+     * @param userId - existing user id
+     * @param userDTO - user that needs to be updates
+     * @return UserDTO response entity with 200 status code
+     *                else return 404 status if user is not found
+     */
+    @PutMapping(value = "/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity updateUser(@PathVariable Long userId, @RequestBody @Valid UserDTO userDTO) {
+        User updatedUser = userService.updateUser(userId, userMapper.toEntity(userDTO));
+        return ResponseEntity.ok(userMapper.toDTO(updatedUser));
     }
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
@@ -111,8 +129,8 @@ public class UserResource {
         return buildBadRequestResponse(e.getMessage());
     }
 
-    @ExceptionHandler(UserIdNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserIdNotFoundException(UserIdNotFoundException e) {
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserIdNotFoundException(UserNotFoundException e) {
         return buildBadRequestResponse(e.getMessage());
     }
 
