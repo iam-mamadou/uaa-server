@@ -60,7 +60,7 @@ public class UserResource {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity createUser(@RequestBody @Valid UserDTO newUserDTO) throws URISyntaxException {
         if (newUserDTO.getUserId() != null ) {
-            return buildBadRequestResponse("new user can't have id");
+            return buildErrorResponse("new user can't have id", HttpStatus.BAD_REQUEST);
         } else {
             User savedUser = userService.createUser(userMapper.toEntity(newUserDTO));
             return ResponseEntity.created(new URI("/api/v1/users/" + savedUser.getUserId()))
@@ -121,25 +121,25 @@ public class UserResource {
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException e) {
-        return buildBadRequestResponse(e.getMessage());
+        return buildErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException e) {
-        return buildBadRequestResponse(e.getMessage());
+        return buildErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserIdNotFoundException(UserNotFoundException e) {
-        return buildBadRequestResponse(e.getMessage());
+        return buildErrorResponse(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    private ResponseEntity<ErrorResponse> buildBadRequestResponse(String message) {
-        return ResponseEntity.badRequest()
-                             .body(ErrorResponse.builder()
-                                                .status(HttpStatus.BAD_REQUEST.value())
-                                                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                                                .message(message)
-                                                .build());
+    private ResponseEntity<ErrorResponse> buildErrorResponse(String message, HttpStatus httpStatus) {
+        return new ResponseEntity<>(ErrorResponse.builder() // response body
+                                                 .status(httpStatus.value())
+                                                 .error(httpStatus.getReasonPhrase())
+                                                 .message(message)
+                                                 .build(),
+                                    httpStatus);
     }
 }
