@@ -63,8 +63,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                                   .parse(jwt)
                                   .getBody();
         List<String> authorityClaim = ((List<String>) body.get("auth"));
-        List<SimpleGrantedAuthority> authorities = authorityMapper.toSimpleGrantedAuthorities(authorityClaim);
-        return new UsernamePasswordAuthenticationToken(body.getSubject(), jwt, authorities);
+        return new UsernamePasswordAuthenticationToken(body.getSubject(), jwt, authorityMapper.toSimpleGrantedAuthorities(authorityClaim));
     }
 
     @Override
@@ -73,13 +72,13 @@ public class JwtTokenServiceImpl implements JwtTokenService {
             Jwts.parser().setSigningKey(secret).parse(jwtToken);
             return true;
         } catch (ExpiredJwtException e) {
-            log.info("Token have expired", e);
+            log.warn("Token have expired", e);
         } catch (MalformedJwtException e) {
-            log.info("Token is malformed");
+            log.warn("Token is malformed", e);
         } catch (SignatureException e) {
-            log.info("Token Signature could be verified");
+            log.warn("Token Signature could be verified", e);
         } catch (IllegalArgumentException e) {
-            log.info("token is missing or empty");
+            log.warn("token is missing or empty", e);
         }
         return false;
     }
