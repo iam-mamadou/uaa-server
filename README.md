@@ -68,23 +68,23 @@
       -H Authorization: Bearer $JWT_TOKEN_FROM_STEP1" \
     ```
 4. Update User by ID
-```Bash
-curl -X PUT \
-  http://localhost:8080/uaa/api/v1/users/2 \
-  -H 'Accept: application/json' \
-  -H Authorization: Bearer $JWT_TOKEN_FROM_STEP1"  \
-  -H 'Content-Type: application/json' \
-  -d '{
-	"firstName": "first",
-	"lastName": "last1",
-	"username": "user12",
-	"password": "user1",
-	"email": "user1@email.com",
-	"authorities": [
-			{
-				"role": "ROLE_USER"
-			}
-		],
-	"enabled": true
-}'
-```
+	```Bash
+	curl -X PUT \
+	  http://localhost:8080/uaa/api/v1/users/2 \
+	  -H 'Accept: application/json' \
+	  -H Authorization: Bearer $JWT_TOKEN_FROM_STEP1"  \
+	  -H 'Content-Type: application/json' \
+	  -d '{
+		"firstName": "first",
+		"lastName": "last1",
+		"username": "user12",
+		"password": "user1",
+		"email": "user1@email.com",
+		"authorities": [
+				{
+					"role": "ROLE_USER"
+				}
+			],
+		"enabled": true
+	}'
+	```
